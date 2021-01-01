@@ -1,0 +1,16 @@
+{
+  "name": "three.js-typescript-tutorial",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "John Miles",
+  "license": "ISC",
+  "dependencies": {
+    "@types/express": "^4.17.9",
+    "@types/node": "^14.14.19",
+    "express": "^4.17.1",
+    "three": "^0.124.0"
+  }
+}
