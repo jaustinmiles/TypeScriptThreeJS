@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
+    "dev" : "concurrently -k \"tsc -p ./src/server -w\" \"tsc -p ./src/client -w\" \"nodemon ./dist/server/server.js\"",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "John Miles",
@@ -12,5 +13,8 @@
     "@types/node": "^14.14.19",
     "express": "^4.17.1",
     "three": "^0.124.0"
+  },
+  "devDependencies": {
+    "concurrently": "^5.3.0"
   }
 }
