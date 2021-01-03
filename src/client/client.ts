@@ -3,6 +3,7 @@ import { OrbitControls } from '/jsm/controls/OrbitControls'
 import Stats from '/jsm/libs/stats.module'
 import {GUI} from '/jsm/libs/dat.gui.module'
 import {createCubeFolders} from './gui.js'
+import {addWindowListener, addStatsPanel} from "./window.js"
 
 const scene: THREE.Scene = new THREE.Scene()
 var axesHelper = new THREE.AxesHelper(5)
@@ -27,21 +28,12 @@ scene.add(camera)
 
 camera.position.z = 2
 
-window.addEventListener('resize', onWindowResize, false);
-
-function onWindowResize() {
-    camera.aspect = window.innerWidth / window.innerHeight
-    camera.updateProjectionMatrix()
-    renderer.setSize(window.innerWidth, window.innerHeight)
-    render()
-}
-
-const stats = Stats()
-document.body.appendChild(stats.domElement)
-
 const gui = new GUI();
 createCubeFolders(cube, gui)
 
+
+addWindowListener(camera, renderer, render)
+let stats = addStatsPanel()
 
 
 
@@ -50,7 +42,6 @@ var animate = function () {
 
     // cube.rotation.x += 0.01;
     // cube.rotation.y += 0.01;
-
 
     renderer.render(scene, camera)
 
