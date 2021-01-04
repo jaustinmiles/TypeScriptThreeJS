@@ -2,7 +2,7 @@ import * as THREE from '/build/three.module.js'
 import { OrbitControls } from '/jsm/controls/OrbitControls'
 import Stats from '/jsm/libs/stats.module'
 import {GUI} from '/jsm/libs/dat.gui.module'
-import {createCubeFolders} from './gui.js'
+import {createCubeFolders, createSphereFolders, createIcosahedronFolders} from './gui.js'
 import {addWindowListener, addStatsPanel} from "./window.js"
 
 const scene: THREE.Scene = new THREE.Scene()
@@ -19,17 +19,31 @@ const controls = new OrbitControls(camera, renderer.domElement)
 controls.zoomSpeed = 0.1
 controls.addEventListener('change', render)
 
-const geometry: THREE.BoxGeometry = new THREE.BoxGeometry()
+const boxGeometry: THREE.BoxGeometry = new THREE.BoxGeometry()
+const sphereGeometry: THREE.SphereGeometry = new THREE.SphereGeometry()
+const icosahedronGeometry: THREE.IcosahedronGeometry = new THREE.IcosahedronGeometry();
+
 const material: THREE.MeshBasicMaterial = new THREE.MeshBasicMaterial({ color: 0x00ff00, wireframe: true })
 
-const cube: THREE.Mesh = new THREE.Mesh(geometry, material)
+const cube: THREE.Mesh = new THREE.Mesh(boxGeometry, material)
+cube.position.x = 5;
 scene.add(cube)
+
+const sphere: THREE.Mesh = new THREE.Mesh(sphereGeometry, material)
+sphere.position.x = -5;
+scene.add(sphere)
+
+const icosahedron: THREE.Mesh = new THREE.Mesh(icosahedronGeometry, material);
+scene.add(icosahedron)
+
 scene.add(camera)
 
 camera.position.z = 2
 
 const gui = new GUI();
 createCubeFolders(cube, gui)
+createSphereFolders(sphere, gui)
+createIcosahedronFolders(icosahedron, gui)
 
 
 addWindowListener(camera, renderer, render)
@@ -43,7 +57,9 @@ var animate = function () {
     // cube.rotation.x += 0.01;
     // cube.rotation.y += 0.01;
 
-    renderer.render(scene, camera)
+    renderer.render(scene, camera);
+
+    (document.getElementById("debug1") as HTMLDivElement).innerText = "Matrix\n" + cube.matrix.elements.toString().replace(/,/g, "\n",)
 
     stats.update();
 };
