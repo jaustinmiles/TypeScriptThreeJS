@@ -20,14 +20,21 @@ controls.zoomSpeed = 0.1
 // controls.addEventListener('change', render)
 
 const boxGeometry: THREE.BoxGeometry = new THREE.BoxGeometry()
-const sphereGeometry: THREE.SphereGeometry = new THREE.SphereGeometry()
+const sphereGeometry: THREE.SphereGeometry = new THREE.SphereGeometry(1, 100, 100)
 const icosahedronGeometry: THREE.IcosahedronGeometry = new THREE.IcosahedronGeometry();
 const planeGeometry: THREE.PlaneGeometry = new THREE.PlaneGeometry()
 const torusKnotGeometry: THREE.TorusKnotGeometry = new THREE.TorusKnotGeometry()
 
 
-// const material: THREE.MeshBasicMaterial = new THREE.MeshBasicMaterial()
-const material: THREE.MeshNormalMaterial = new THREE.MeshNormalMaterial();
+const material: THREE.MeshBasicMaterial = new THREE.MeshBasicMaterial()
+// const material: THREE.MeshNormalMaterial = new THREE.MeshNormalMaterial();
+
+const texture = new THREE.TextureLoader().load("img/grid.png")
+material.map = texture
+const envTexture = new THREE.CubeTextureLoader().load(["img/px_50.png", "img/nx_50.png", "img/py_50.png", "img/ny_50.png", "img/pz_50.png", "img/nz_50.png"])
+envTexture.mapping = THREE.CubeReflectionMapping
+// envTexture.mapping = THREE.CubeRefractionMapping
+material.envMap = envTexture
 
 const cube: THREE.Mesh = new THREE.Mesh(boxGeometry, material)
 cube.position.x = 5
@@ -73,7 +80,7 @@ var animate = function () {
 
     renderer.render(scene, camera);
 
-    (document.getElementById("debug1") as HTMLDivElement).innerText = "Matrix\n" + cube.matrix.elements.toString().replace(/,/g, "\n",)
+    // (document.getElementById("debug1") as HTMLDivElement).innerText = "Matrix\n" + cube.matrix.elements.toString().replace(/,/g, "\n",)
 
     stats.update();
 };

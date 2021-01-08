@@ -95,7 +95,7 @@ export function createIcosahedronFolders(icosahedron: THREE.Mesh, gui: GUI) {
     
 }
 
-export function createMaterialFolders(material: THREE.Material, gui: GUI) {
+export function createMaterialFolders(material: THREE.MeshBasicMaterial, gui: GUI) {
 
     
 var options = {
@@ -103,6 +103,11 @@ var options = {
         "FrontSide": THREE.FrontSide,
         "BackSide": THREE.BackSide,
         "DoubleSide": THREE.DoubleSide,
+    },
+    combine: {
+        "MultiplyOperation": THREE.MultiplyOperation,
+        "MixOperation": THREE.MixOperation,
+        "AddOperation": THREE.AddOperation
     }
 }
 
@@ -116,8 +121,23 @@ var options = {
     materialFolder.add(material, 'side', options.side).onChange(() => updateMaterial())
     materialFolder.open()
 
+    var meshBasicMaterialFolder = gui.addFolder('THREE.MeshBasicMaterial');
+
+    var data = {
+        color: material.color.getHex(),
+    };
+
+    meshBasicMaterialFolder.addColor(data, 'color').onChange(() => { material.color.setHex(Number(data.color.toString().replace('#', '0x'))) });
+    meshBasicMaterialFolder.add(material, 'wireframe');
+    // meshBasicMaterialFolder.add(material, 'wireframeLinewidth', 0, 10);
+    meshBasicMaterialFolder.add(material, 'combine', options.combine).onChange(() => updateMaterial())
+    meshBasicMaterialFolder.add(material, 'reflectivity', 0, 1);
+    meshBasicMaterialFolder.add(material, 'refractionRatio', 0, 1);
+    meshBasicMaterialFolder.open()
+
     function updateMaterial() {
         material.side = Number(material.side)
+        material.combine = Number(material.combine)
         material.needsUpdate = true
     }
 
