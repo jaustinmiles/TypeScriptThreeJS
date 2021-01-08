@@ -95,22 +95,16 @@ export function createIcosahedronFolders(icosahedron: THREE.Mesh, gui: GUI) {
     
 }
 
-export function createMaterialFolders(material: THREE.MeshBasicMaterial, gui: GUI) {
+export function createMaterialFolder(material: THREE.Material, gui: GUI) {
 
-    
-var options = {
-    side: {
-        "FrontSide": THREE.FrontSide,
-        "BackSide": THREE.BackSide,
-        "DoubleSide": THREE.DoubleSide,
-    },
-    combine: {
-        "MultiplyOperation": THREE.MultiplyOperation,
-        "MixOperation": THREE.MixOperation,
-        "AddOperation": THREE.AddOperation
+    var options = {
+        side: {
+            "FrontSide": THREE.FrontSide,
+            "BackSide": THREE.BackSide,
+            "DoubleSide": THREE.DoubleSide,
+        }
     }
-}
-
+    
     const materialFolder = gui.addFolder('THREE.Material')
     materialFolder.add(material, 'transparent')
     materialFolder.add(material, 'opacity', 0, 1, 0.01)
@@ -120,6 +114,24 @@ var options = {
     materialFolder.add(material, 'visible')
     materialFolder.add(material, 'side', options.side).onChange(() => updateMaterial())
     materialFolder.open()
+
+    function updateMaterial() {
+        material.side = Number(material.side)
+        material.needsUpdate = true
+    }
+}
+
+export function createMeshBasicMaterialFolders(material: THREE.MeshBasicMaterial, gui: GUI) {
+
+    
+    var options = {
+        combine: {
+            "MultiplyOperation": THREE.MultiplyOperation,
+            "MixOperation": THREE.MixOperation,
+            "AddOperation": THREE.AddOperation
+        }
+    }
+
 
     var meshBasicMaterialFolder = gui.addFolder('THREE.MeshBasicMaterial');
 
@@ -136,10 +148,87 @@ var options = {
     meshBasicMaterialFolder.open()
 
     function updateMaterial() {
-        material.side = Number(material.side)
         material.combine = Number(material.combine)
         material.needsUpdate = true
     }
 
 }
+
+export function createMeshNormalMaterialFolders(material: THREE.MeshNormalMaterial, gui: GUI) {
+    var meshNormalMaterialFolder = gui.addFolder('THREE.MeshNormalMaterial');
+
+    meshNormalMaterialFolder.add(material, 'wireframe');
+    meshNormalMaterialFolder.add(material, 'flatShading').onChange(() => updateMaterial())
+    meshNormalMaterialFolder.open()
+
+    function updateMaterial() {
+        material.side = Number(material.side)
+        material.needsUpdate = true
+    }
+}
+
+export function createMeshLambertMaterialFolders(material: THREE.MeshLambertMaterial, gui: GUI) {
+
+    var data = {
+        color: material.color.getHex(),
+        emissive: material.emissive.getHex()
+    };
+
+    var options = {
+        combine: {
+            "MultiplyOperation": THREE.MultiplyOperation,
+            "MixOperation": THREE.MixOperation,
+            "AddOperation": THREE.AddOperation
+        },
+    }
+    var meshLambertMaterialFolder = gui.addFolder('THREE.MeshLambertMaterial');
+
+
+    meshLambertMaterialFolder.addColor(data, 'color').onChange(() => { material.color.setHex(Number(data.color.toString().replace('#', '0x'))) });
+    meshLambertMaterialFolder.addColor(data, 'emissive').onChange(() => { material.emissive.setHex(Number(data.emissive.toString().replace('#', '0x'))) });
+    meshLambertMaterialFolder.add(material, 'wireframe');
+    meshLambertMaterialFolder.add(material, 'combine', options.combine).onChange(() => updateMaterial())
+    meshLambertMaterialFolder.add(material, 'reflectivity', 0, 1);
+    meshLambertMaterialFolder.add(material, 'refractionRatio', 0, 1);
+    meshLambertMaterialFolder.open()
+
+    function updateMaterial() {
+        material.combine = Number(material.combine)
+        material.needsUpdate = true
+    }
+}
+
+export function createMeshPhongMaterialFolders(material: THREE.MeshPhongMaterial, gui: GUI) {
+    var options = {
+        combine: {
+            "MultiplyOperation": THREE.MultiplyOperation,
+            "MixOperation": THREE.MixOperation,
+            "AddOperation": THREE.AddOperation
+        },
+    }
+
+    var data = {
+        color: material.color.getHex(),
+        emissive: material.emissive.getHex(),
+        specular: material.specular.getHex()
+    };
+    
+    var meshPhongMaterialFolder = gui.addFolder('THREE.MeshPhongMaterial');
+    
+    meshPhongMaterialFolder.addColor(data, 'color').onChange(() => { material.color.setHex(Number(data.color.toString().replace('#', '0x'))) });
+    meshPhongMaterialFolder.addColor(data, 'emissive').onChange(() => { material.emissive.setHex(Number(data.emissive.toString().replace('#', '0x'))) });
+    meshPhongMaterialFolder.addColor(data, 'specular').onChange(() => { material.specular.setHex(Number(data.specular.toString().replace('#', '0x'))) });
+    meshPhongMaterialFolder.add(material, 'shininess', 0, 1024);
+    meshPhongMaterialFolder.add(material, 'wireframe');
+    meshPhongMaterialFolder.add(material, 'flatShading').onChange(() => updateMaterial())
+    meshPhongMaterialFolder.add(material, 'combine', options.combine).onChange(() => updateMaterial())
+    meshPhongMaterialFolder.add(material, 'reflectivity', 0, 1);
+    meshPhongMaterialFolder.add(material, 'refractionRatio', 0, 1);
+    meshPhongMaterialFolder.open()
+    
+    function updateMaterial() {
+        material.combine = Number(material.combine)
+        material.needsUpdate = true
+    }
+} 
 
