@@ -2,8 +2,9 @@ import * as THREE from '/build/three.module.js'
 import { OrbitControls } from '/jsm/controls/OrbitControls'
 import Stats from '/jsm/libs/stats.module'
 import {GUI} from '/jsm/libs/dat.gui.module'
-import {createCubeFolders, createSphereFolders, createIcosahedronFolders, createMeshBasicMaterialFolders, createMaterialFolder, createMeshNormalMaterialFolders, createMeshLambertMaterialFolders, createMeshPhongMaterialFolders} from './gui.js'
+import {createCubeFolders, createSphereFolders, createIcosahedronFolders, createMeshBasicMaterialFolders, createMaterialFolder, createMeshNormalMaterialFolders, createMeshLambertMaterialFolders, createMeshPhongMaterialFolders, createMeshStandardMaterialFolders, createMeshMatCapMaterialFolders, createMeshToonMaterialFolders} from './gui.js'
 import {addWindowListener, addStatsPanel} from "./window.js"
+import {MaterialManager} from "./material.js"
 
 const scene: THREE.Scene = new THREE.Scene()
 var axesHelper = new THREE.AxesHelper(5)
@@ -30,17 +31,16 @@ const planeGeometry: THREE.PlaneGeometry = new THREE.PlaneGeometry()
 const torusKnotGeometry: THREE.TorusKnotGeometry = new THREE.TorusKnotGeometry()
 
 
-// const material: THREE.MeshBasicMaterial = new THREE.MeshBasicMaterial()
-// const material: THREE.MeshNormalMaterial = new THREE.MeshNormalMaterial();
-// const material: THREE.MeshLambertMaterial = new THREE.MeshLambertMaterial()
-const material: THREE.MeshPhongMaterial = new THREE.MeshPhongMaterial();
+// Material Manager options
+const materialManager = new MaterialManager();
+// materialManager.createMatCapMaterial()
+materialManager.createToonMaterial();
+// materialManager.createPhongMaterial();
+const material = <THREE.MeshToonMaterial>materialManager.getMaterial()
+// materialManager.loadGridTexture()
+// materialManager.loadEnvironmentTexture()
+// materialManager.loadMatCapTexture(2)
 
-const texture = new THREE.TextureLoader().load("img/grid.png")
-material.map = texture
-// const envTexture = new THREE.CubeTextureLoader().load(["img/px_50.png", "img/nx_50.png", "img/py_50.png", "img/ny_50.png", "img/pz_50.png", "img/nz_50.png"])
-// envTexture.mapping = THREE.CubeReflectionMapping
-// envTexture.mapping = THREE.CubeRefractionMapping
-// material.envMap = envTexture
 
 const cube: THREE.Mesh = new THREE.Mesh(boxGeometry, material)
 cube.position.x = 5
@@ -67,14 +67,14 @@ scene.add(camera)
 camera.position.z = 2
 
 const gui = new GUI();
-// createCubeFolders(cube, gui)
-// createSphereFolders(sphere, gui)
-// createIcosahedronFolders(icosahedron, gui)
 createMaterialFolder(material, gui);
 // createMeshNormalMaterialFolders(material, gui)
 // createMeshBasicMaterialFolders(material, gui);
 // createMeshLambertMaterialFolders(material, gui)
-createMeshPhongMaterialFolders(material, gui)
+// createMeshPhongMaterialFolders(material, gui)
+// createMeshStandardMaterialFolders(material, gui);
+// createMeshMatCapMaterialFolders(material, gui)
+createMeshToonMaterialFolders(material, gui, materialManager);
 
 
 addWindowListener(camera, renderer, render)

@@ -1,5 +1,6 @@
 import * as THREE from '/build/three.module.js'
 import { GUI } from "three/examples/jsm/libs/dat.gui.module"
+import { MaterialManager } from './material';
 
 export function createCubeFolders(cube: THREE.Mesh, gui: GUI): void {
     const cubeFolder = gui.addFolder("Cube")
@@ -232,3 +233,70 @@ export function createMeshPhongMaterialFolders(material: THREE.MeshPhongMaterial
     }
 } 
 
+
+export function createMeshStandardMaterialFolders(material: THREE.MeshStandardMaterial, gui: GUI) {
+
+
+    var meshStandardMaterialFolder = gui.addFolder('THREE.MeshStandardMaterial');
+
+    var data = {
+        color: material.color.getHex(),
+        emissive: material.emissive.getHex()
+    };
+
+    meshStandardMaterialFolder.addColor(data, 'color').onChange(() => { material.color.setHex(Number(data.color.toString().replace('#', '0x'))) });
+    meshStandardMaterialFolder.addColor(data, 'emissive').onChange(() => { material.emissive.setHex(Number(data.emissive.toString().replace('#', '0x'))) });
+    meshStandardMaterialFolder.add(material, 'wireframe');
+    meshStandardMaterialFolder.add(material, 'flatShading').onChange(() => updateMaterial())
+    meshStandardMaterialFolder.add( material, 'roughness', 0, 1 );
+    meshStandardMaterialFolder.add( material, 'metalness', 0, 1 );
+    meshStandardMaterialFolder.open()
+
+    function updateMaterial() {
+        material.needsUpdate = true
+    }
+}
+
+export function createMeshMatCapMaterialFolders(material: THREE.MeshMatcapMaterial, gui: GUI) {
+    var data = {
+        color: material.color.getHex()
+    };
+    
+    
+    var meshMatcapMaterialFolder = gui.addFolder('THREE.MeshMatcapMaterial');
+    meshMatcapMaterialFolder.addColor(data, 'color').onChange(() => { material.color.setHex(Number(data.color.toString().replace('#', '0x'))) });
+    meshMatcapMaterialFolder.add(material, 'flatShading').onChange(() => updateMaterial())
+    meshMatcapMaterialFolder.open()
+    
+    function updateMaterial() {
+        material.needsUpdate = true
+    }
+}
+
+export function createMeshToonMaterialFolders(material: THREE.MeshToonMaterial, gui: GUI, materialManager: MaterialManager) {
+
+    var data = {
+        color: material.color.getHex(),
+        gradientMap: "fiveTone"
+    }
+
+    var options = {
+        gradientMap: {
+            "Default": null,
+            "threeTone": "threeTone",
+            "fourTone": "fourTone",
+            "fiveTone": "fiveTone"
+        }
+    }
+
+    var meshToonMaterialFolder = gui.addFolder('THREE.MeshToonMaterial')
+    meshToonMaterialFolder.addColor(data, 'color').onChange(() => { material.color.setHex(Number(data.color.toString().replace('#', '0x'))) })
+    meshToonMaterialFolder.add(material, 'flatShading').onChange(() => updateMaterial())
+    meshToonMaterialFolder.add(data, 'gradientMap', options.gradientMap).onChange(() => updateMaterial())
+    meshToonMaterialFolder.open()
+
+    function updateMaterial() {
+        materialManager.loadTone(data.gradientMap)
+        material.needsUpdate = true
+    }
+}
